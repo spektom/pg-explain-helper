@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>PostgreSQL EXPLAIN Helper</title>
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/spiermar/d3-flame-graph@2.0.3/dist/d3-flamegraph.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-fork-ribbon-css/0.2.2/gh-fork-ribbon.min.css" />
+    <style type="text/css">
+      .github-fork-ribbon:before {
+        background-color: #18447E;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="container">
+      <div class="row mt-5">
+        <form class="col-12">
+          <h3>Execution Plan</h3>
+          <p class="text-muted">Copy execution plan here, and click Explain button</p>
+          <div class="form-group">
+            <textarea class="form-control mt-2" id="text" rows="15"></textarea>
+          </div>
+          <button type="button" class="btn btn-info" onclick="evaluatePlan();">Explain</button>
+        </form>
+      </div>
+      <div class="row mt-5 chart-wrapper invisible">
+        <div class="col-12">
+          <h4>Estimate</h4>
+          <div id="estimate-chart"></div>
+        </div>
+      </div>
+      <div class="row mt-5 chart-wrapper invisible">
+        <div class="col-12">
+          <h4>Actual</h4>
+          <div id="actual-chart"></div>
+        </div>
+      </div>
+    </div>
+
+    <a class="github-fork-ribbon" href="https://github.com/spektom/pg-explain-helper"
+      data-ribbon="Fork me on GitHub" title="Fork me on GitHub">Fork me on GitHub</a>
+
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="https://d3js.org/d3.v4.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/d3-tip/0.9.1/d3-tip.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/gh/spiermar/d3-flame-graph@2.0.3/dist/d3-flamegraph.min.js"></script>
+    <script type="text/javascript" src="main.js"></script>
+  </body>
+</html>
