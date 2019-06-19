@@ -26,10 +26,14 @@ function parsePlan(text) {
       }
     }
     node.info.push(text.trim());
+    const sepIdx = text.indexOf(':');
+    if (sepIdx != -1) {
+      node.opts[text.substring(0, sepIdx).trim()] = text.substring(sepIdx + 1).trim();
+    }
   }
 
   function newNode(indent, text) {
-    const node = { children: [], info: [], indent: indent || 0 };
+    const node = { children: [], info: [], opts: {}, indent: indent || 0 };
     if (text) {
       addInfo(node, text);
     }
@@ -59,14 +63,16 @@ function parsePlan(text) {
 }
 
 function createFlameGraph(plan, valueFn, component) {
+  function getFullName(node) {
+    return node.info[0].split('(')[0].replace(/^\W+/, '').trim();
+  }
+
   function getName(node) {
-    return node.info[0]
-      .split('(')[0].replace(/^\W+/, '')
-      .replace(/\s[a-z].*/, '').trim();
+    return node.info[0].split('(')[0].replace(/^\W+/, '').replace(/\s[a-z].*/, '').trim();
   }
 
   function convertNodes(node) {
-    const fgNode = { name: getName(node), value: valueFn(node), children: [] };
+    const fgNode = { name: getName(node), value: valueFn(node), orig: node, children: [] };
     for (var i = 0; i < node.children.length; ++i) {
       fgNode.children[i] = convertNodes(node.children[i]);
     }
@@ -81,7 +87,13 @@ function createFlameGraph(plan, valueFn, component) {
 
     const tip = d3.tip()
       .attr('class', 'd3-flame-graph-tip')
-      .html(function(d) {return d.data.name + ' (total time: ' + d.data.value + 'ms)'; });
+      .html(function(d) {
+        var s = getFullName(d.data.orig) + ' (total time: ' + d.data.value + 'ms)<br>';
+        for (var k in d.data.orig.opts) {
+          s += k + ': ' + d.data.orig.opts[k] + '<br>';
+        }
+        return s;
+      });
 
     const flamegraph = d3.flamegraph().width($('textarea').width()).tooltip(tip);
     d3.select(component).datum(fgNode).call(flamegraph);
@@ -90,6 +102,7 @@ function createFlameGraph(plan, valueFn, component) {
 
 function evaluatePlan() {
   const plan = parsePlan($('textarea').val());
+  console.log(plan);
 
   createFlameGraph(plan, function(node) {
     return node.estimate.cost.total;
